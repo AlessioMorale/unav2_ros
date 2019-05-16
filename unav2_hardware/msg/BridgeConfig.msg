@@ -1,0 +1,3 @@
+uint16 pwm_dead_zone
+uint16 pwm_frequency
+bool enable_polarity
