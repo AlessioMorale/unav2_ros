@@ -7,11 +7,21 @@ from queue import Queue, Empty
 from dynamic_reconfigure.server import Server
 from std_msgs.msg import UInt32
 from unav2_hardware.cfg import UnavBridgeConfig
-from unav2_hardware.cfg import UnavDiagnosticConfig
-from unav2_hardware.cfg import UnavEmergencyConfig
 from unav2_hardware.cfg import UnavEncoderConfig
+from unav2_hardware.cfg import UnavLimitsConfig
+from unav2_hardware.cfg import UnavMechanicalConfig
+from unav2_hardware.cfg import UnavOperationConfig
+from unav2_hardware.cfg import UnavPIDConfig
+from unav2_hardware.cfg import UnavSafetyConfig
+
+
 from unav2_hardware.msg import BridgeConfig
 from unav2_hardware.msg import EncoderConfig
+from unav2_hardware.msg import LimitsConfig
+from unav2_hardware.msg import MechanicalConfig
+from unav2_hardware.msg import OperationConfig
+from unav2_hardware.msg import PIDConfig
+from unav2_hardware.msg import SafetyConfig
 
 # List all configuration sets and associated message to be send to unav
 # namespace: dynamic_reconfigure namespace
@@ -19,10 +29,20 @@ from unav2_hardware.msg import EncoderConfig
 # msg: message instance
 # propertynames: list of property to copy from config to message or tuples when source/dest name differs
 configurationSets = [
-    {"namespace": "bridge", "config": UnavEncoderConfig, "msg": EncoderConfig(), 
-        "propertynames": [["CPR", "cpr"], "position", ["z_index", "has_z_index"], "channels"]},
-    {"namespace": "encoder", "config": UnavBridgeConfig, "msg": BridgeConfig(), 
-        "propertynames": [["PWM_dead_zone", "pwm_dead_zone"], ["PWM_frequency", "pwm_frequency"], ["bridge_enable_polarity", "enable_polarity"], "current_offset", "current_gain", "volt_gain", "volt_offset"]} 
+    {"namespace": "bridge", "config": UnavBridgeConfig, "msg": BridgeConfig(), 
+        "propertynames": ["pwm_dead_time", "pwm_frequency", "bridge_enable_polarity", "bridge_disable_mode_outa", "bridge_disable_mode_outb", "current_offset", "current_gain", "volt_gain", "volt_offset"]},
+    {"namespace": "encoder", "config": UnavEncoderConfig, "msg": EncoderConfig(), 
+        "propertynames": ["cpr", "position", "has_z_index", "channels"]},
+    {"namespace": "limits", "config": UnavLimitsConfig, "msg": LimitsConfig(),    
+        "propertynames": ['position','velocity','current','effort','pwm']},
+    {"namespace": "mechanical", "config": UnavMechanicalConfig, "msg": MechanicalConfig(),
+        "propertynames": ['ratio','rotation0','rotation1','rotation2','rotation3']},
+    {"namespace": "operation", "config": UnavOperationConfig, "msg": OperationConfig(),
+        "propertynames": ['settings_command','operation_mode']},
+    {"namespace": "pid", "config": UnavPIDConfig, "msg": PIDConfig(),
+        "propertynames": ["vel_kp","vel_ki","vel_kd","vel_kaw","cur_kp","cur_ki","cur_kd","cur_kaw","vel_frequency","cur_frequency","cur_enable"]},
+    {"namespace": "safety", "config": UnavSafetyConfig, "msg": SafetyConfig(),
+        "propertynames": ["temp_warning","temp_critical","temp_timeout","temp_autorestore","cur_warning","cur_critical","cur_timeout","cur_autorestore","slope_time","bridge_off","timeout"]},
 ]
 
 
