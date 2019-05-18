@@ -1,5 +1,5 @@
 bool bridge_enable_polarity
-uint16 pwm_dead_zone
+float32 pwm_dead_zone
 uint16 pwm_frequency
 bool enable_polarity
 float32 current_offset
