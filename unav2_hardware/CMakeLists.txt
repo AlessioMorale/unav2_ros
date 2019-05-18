@@ -53,11 +53,13 @@ add_message_files(
     FILES
     BridgeConfig.msg
     EncoderConfig.msg
-    JointCommand.msg
-    JointConfig.msg
+    LimitsConfig.msg
+    MechanicalConfig.msg
+    OperationConfig.msg
+    PIDConfig.msg
+    SafetyConfig.msg
     JointState.msg
-    pidConfig.msg
-    SafetyLimits.msg
+    JointCommand.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -97,12 +99,12 @@ generate_messages(
 ## Generate dynamic reconfigure parameters in the 'cfg' folder
 generate_dynamic_reconfigure_options(
    cfg/UnavBridge.cfg
-   cfg/UnavDiagnostic.cfg
-   cfg/UnavEmergency.cfg
    cfg/UnavEncoder.cfg
    cfg/UnavLimits.cfg
-   cfg/UnavParameter.cfg
+   cfg/UnavMechanical.cfg
+   cfg/UnavOperation.cfg
    cfg/UnavPID.cfg
+   cfg/UnavSafety.cfg
 )
 
 ###################################

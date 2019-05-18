@@ -1,0 +1,12 @@
+float32 vel_kp
+float32 vel_ki
+float32 vel_kd
+float32 vel_kaw
+float32 cur_kp
+float32 cur_ki
+float32 cur_kd
+float32 cur_kaw
+uint16 vel_frequency
+uint16 cur_frequency
+bool cur_enable
+uint32 transactionId
