@@ -14,18 +14,13 @@ from unav2_hardware.msg import BridgeConfig
 from unav2_hardware.msg import EncoderConfig
 
 
-#   ["ConfigMessageName", MessageInstance(), [list_of_properties_to_copy], publisher_instance]
-msgConfigs = [
-    {"config": UnavEncoderConfig, "msg": EncoderConfig(), "propertynames": [["CPR", "cpr"], "position", ["z_index", "has_z_index"], "channels"],
+configurationSets = [
+    {"namespace": "bridge", "config": UnavEncoderConfig, "msg": EncoderConfig(), "propertynames": [["CPR", "cpr"], "position", ["z_index", "has_z_index"], "channels"],
      "publisher": rospy.Publisher('unav2/config/EncoderConfig', EncoderConfig, queue_size=10)},
-    {"config": UnavBridgeConfig, "msg": BridgeConfig(), "propertynames": [["PWM_dead_zone", "pwm_dead_zone"], ["PWM_frequency", "pwm_frequency"], ["bridge_enable_polarity", "enable_polarity"], "current_offset", "current_gain", "volt_gain", "volt_offset"],
+    {"namespace": "encoder", "config": UnavBridgeConfig, "msg": BridgeConfig(), "propertynames": [["PWM_dead_zone", "pwm_dead_zone"], ["PWM_frequency", "pwm_frequency"], ["bridge_enable_polarity", "enable_polarity"], "current_offset", "current_gain", "volt_gain", "volt_offset"],
      "publisher": rospy.Publisher('unav2/config/BridgeConfig', BridgeConfig, queue_size=10)} 
 ]
 
-srvConfigs = [
-    {"configClass": UnavBridgeConfig, "namespace": "bridge"},
-    {"configClass": UnavEncoderConfig, "namespace": "Encoder"}
-]
 messageQueue = []
 ackQueue = Queue(maxsize=40) 
 srv = []
@@ -44,7 +39,7 @@ def copyProperties(source, dest, propertynames):
         setattr(dest, pout, v)
 
 def publishConfig(cfgtype, config):
-    for msgcfg in [msg for msg in msgConfigs if msg["config"] is cfgtype]:
+    for msgcfg in [msg for msg in configurationSets if msg["config"] is cfgtype]:
         msg = {"msg": msgcfg["msg"], "ttl": MsgTTL}
         copyProperties(config, msg["msg"], msgcfg["propertynames"])
         msg["msg"].transactionId = randint(0, 2**32 - 1)
@@ -89,7 +84,7 @@ def run_node():
             pass
         messageQueueLock.acquire()
         for msg in messageQueue :
-            for cfg in [cfg for cfg in msgConfigs if cfg["msg"] == msg["msg"]]:
+            for cfg in [cfg for cfg in configurationSets if cfg["msg"] == msg["msg"]]:
                 rospy.logdebug("Sending message " + str(msg["msg"]) + ", ttl:" + str(msg["ttl"]))
                 cfg["publisher"].publish(msg["msg"]) 
             msg["ttl"] = msg["ttl"] - 1
@@ -105,8 +100,8 @@ if __name__ == "__main__":
         rospy.init_node("unav2_configuration", anonymous=False)
 
         # Setup dynamic recofigurre callbacks
-        [srv.append(Server(config["configClass"], bindCallback(config["configClass"]), config["namespace"]))
-        for config in srvConfigs]
+        [srv.append(Server(config["config"], bindCallback(config["config"]), config["namespace"]))
+        for config in configurationSets]
         
         rospy.Subscriber("ack", UInt32, configAckCallback)
         
