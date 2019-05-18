@@ -73,6 +73,7 @@ def publishConfig(cfgtype, config):
         #msgcfg["publisher"].publish(msg)
         
         messageQueueLock.acquire()
+        [messageQueue.remove(m) for m in messageQueue if m["msg"] == msg["msg"]]
         messageQueue.append(msg)
         messageQueueLock.release()
 
@@ -102,7 +103,7 @@ def run_node():
                 ack = ackQueue.get(False, 0)
                 msgs = [msg for msg in messageQueue if msg["msg"].transactionId == ack]
                 if len(msgs) == 0:
-                    rospy.logwarn("Received Ack for a non existent transaction: " + str(ack))
+                    rospy.logwarn("Received Ack for a non existing transaction: " + str(ack))
                 else:
                     for msg in msgs:
                         messageQueue.remove(msg)
@@ -116,7 +117,7 @@ def run_node():
                 publishers[cfg["config"].__name__].publish(msg["msg"]) 
             msg["ttl"] = msg["ttl"] - 1
             if msg["ttl"] <= 0:
-                rospy.logerr("No Acknowledge received for transaction " + str(msg["msg"].transactionId) + ", message discarded")
+                rospy.logerr("No acknowledge received for transaction " + str(msg["msg"].transactionId) + ", message discarded")
                 messageQueue.remove(msg)
         messageQueueLock.release()
 
