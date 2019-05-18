@@ -13,19 +13,26 @@ from unav2_hardware.cfg import UnavEncoderConfig
 from unav2_hardware.msg import BridgeConfig
 from unav2_hardware.msg import EncoderConfig
 
-
+# List all configuration sets and associated message to be send to unav
+# namespace: dynamic_reconfigure namespace
+# config: configuration type
+# msg: message instance
+# propertynames: list of property to copy from config to message or tuples when source/dest name differs
 configurationSets = [
-    {"namespace": "bridge", "config": UnavEncoderConfig, "msg": EncoderConfig(), "propertynames": [["CPR", "cpr"], "position", ["z_index", "has_z_index"], "channels"],
-     "publisher": rospy.Publisher('unav2/config/EncoderConfig', EncoderConfig, queue_size=10)},
-    {"namespace": "encoder", "config": UnavBridgeConfig, "msg": BridgeConfig(), "propertynames": [["PWM_dead_zone", "pwm_dead_zone"], ["PWM_frequency", "pwm_frequency"], ["bridge_enable_polarity", "enable_polarity"], "current_offset", "current_gain", "volt_gain", "volt_offset"],
-     "publisher": rospy.Publisher('unav2/config/BridgeConfig', BridgeConfig, queue_size=10)} 
+    {"namespace": "bridge", "config": UnavEncoderConfig, "msg": EncoderConfig(), 
+        "propertynames": [["CPR", "cpr"], "position", ["z_index", "has_z_index"], "channels"]},
+    {"namespace": "encoder", "config": UnavBridgeConfig, "msg": BridgeConfig(), 
+        "propertynames": [["PWM_dead_zone", "pwm_dead_zone"], ["PWM_frequency", "pwm_frequency"], ["bridge_enable_polarity", "enable_polarity"], "current_offset", "current_gain", "volt_gain", "volt_offset"]} 
 ]
 
+
+MsgTTL = 30 # max retries for a message
+PublishersNamespace = "unav2/config"
 messageQueue = []
 ackQueue = Queue(maxsize=40) 
 srv = []
-MsgTTL = 30 # max retries for a message
 messageQueueLock = Lock()
+publishers = {}
 
 def copyProperties(source, dest, propertynames):
     for p in propertynames:
@@ -86,7 +93,7 @@ def run_node():
         for msg in messageQueue :
             for cfg in [cfg for cfg in configurationSets if cfg["msg"] == msg["msg"]]:
                 rospy.logdebug("Sending message " + str(msg["msg"]) + ", ttl:" + str(msg["ttl"]))
-                cfg["publisher"].publish(msg["msg"]) 
+                publishers[cfg["config"].__name__].publish(msg["msg"]) 
             msg["ttl"] = msg["ttl"] - 1
             if msg["ttl"] <= 0:
                 rospy.logerr("No Acknowledge received for transaction " + str(msg["msg"].transactionId) + ", message discarded")
@@ -99,9 +106,13 @@ if __name__ == "__main__":
     try:
         rospy.init_node("unav2_configuration", anonymous=False)
 
-        # Setup dynamic recofigurre callbacks
-        [srv.append(Server(config["config"], bindCallback(config["config"]), config["namespace"]))
-        for config in configurationSets]
+        
+        for config in configurationSets:
+            # Setup publishers
+            publishers[config["config"].__name__] = rospy.Publisher(PublishersNamespace + "/" + config["namespace"], type(config["msg"]), queue_size=10)
+
+            # Setup dynamic recofigurre callbacks
+            srv.append(Server(config["config"], bindCallback(config["config"]), config["namespace"]))
         
         rospy.Subscriber("ack", UInt32, configAckCallback)
         
