@@ -45,9 +45,10 @@ configurationSets = [
         "propertynames": ["temp_warning","temp_critical","temp_timeout","temp_autorestore","cur_warning","cur_critical","cur_timeout","cur_autorestore","slope_time","bridge_off","timeout"]},
 ]
 
-
 MsgTTL = 30 # max retries for a message
-PublishersNamespace = "unav2/config"
+rootNamespace = "unav2"
+PublishersNamespace = rootNamespace + "/config"
+ackNamespace = rootNamespace + "/status/ack"
 messageQueue = []
 ackQueue = Queue(maxsize=40) 
 srv = []
@@ -96,7 +97,7 @@ def configAckCallback(data):
     ackQueue.put(data.data)    
 
 def run_node():
-    rate = rospy.Rate(1) # 10hz
+    rate = rospy.Rate(10) # 10hz
     while not rospy.is_shutdown():
         try:
             while True: 
@@ -126,7 +127,7 @@ def run_node():
 if __name__ == "__main__":
     try:
         rospy.init_node("unav2_configuration", anonymous=False)
-
+        MsgTTL = int(rospy.get_param('~msgttl','10'))
         
         for config in configurationSets:
             # Setup publishers
@@ -135,7 +136,7 @@ if __name__ == "__main__":
             # Setup dynamic recofigurre callbacks
             srv.append(Server(config["config"], bindCallback(config["config"]), config["namespace"]))
         
-        rospy.Subscriber("ack", UInt32, configAckCallback)
+        rospy.Subscriber(ackNamespace, UInt32, configAckCallback)
         
         run_node()
 
