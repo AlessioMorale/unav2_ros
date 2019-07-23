@@ -11,7 +11,7 @@
   <!-- <url type="website">http://wiki.ros.org/unav2_msgs</url> -->
   <author email="alessio@alessiomorale.com">Alessio Morale</author>
   <author email="raffaello.bonghi@officinerobotiche.it">Raffaello Bonghi </author>
- 
+
 
   <!-- The *depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
@@ -19,6 +19,8 @@
   <!-- Use depend as a shortcut for packages that are both build and exec dependencies -->
   <!--   <depend>roscpp</depend> -->
   <depend>std_msgs</depend>
+  <depend>diagnostic_msgs</depend>
+
   <!--   Note that this is equivalent to the following: -->
   <!--   <build_depend>roscpp</build_depend> -->
   <!--   <exec_depend>roscpp</exec_depend> -->

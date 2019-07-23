@@ -50,10 +50,12 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
     FILES
     BridgeConfig.msg
+    Diagnostic.msg
     EncoderConfig.msg
     LimitsConfig.msg
     MechanicalConfig.msg
     OperationConfig.msg
+    PerfCounter.msg
     PIDConfig.msg
     SafetyConfig.msg
     PIDState.msg

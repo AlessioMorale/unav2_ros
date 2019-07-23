@@ -15,13 +15,13 @@ from unav2_hardware.cfg import UnavPIDConfig
 from unav2_hardware.cfg import UnavSafetyConfig
 
 
-from unav2_hardware.msg import BridgeConfig
-from unav2_hardware.msg import EncoderConfig
-from unav2_hardware.msg import LimitsConfig
-from unav2_hardware.msg import MechanicalConfig
-from unav2_hardware.msg import OperationConfig
-from unav2_hardware.msg import PIDConfig
-from unav2_hardware.msg import SafetyConfig
+from unav2_msgs.msg import BridgeConfig
+from unav2_msgs.msg import EncoderConfig
+from unav2_msgs.msg import LimitsConfig
+from unav2_msgs.msg import MechanicalConfig
+from unav2_msgs.msg import OperationConfig
+from unav2_msgs.msg import PIDConfig
+from unav2_msgs.msg import SafetyConfig
 
 # List all configuration sets and associated message to be send to unav
 # namespace: dynamic_reconfigure namespace
