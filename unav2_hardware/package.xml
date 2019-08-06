@@ -11,7 +11,7 @@
   <!-- <url type="website">http://wiki.ros.org/unav2_hardware</url> -->
   <author email="alessio@alessiomorale.com">Alessio Morale</author>
   <author email="raffaello.bonghi@officinerobotiche.it">Raffaello Bonghi </author>
- 
+
   <!-- The *depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
   <!-- Examples: -->
@@ -19,6 +19,13 @@
   <!--   <depend>roscpp</depend> -->
   <depend>std_msgs</depend>
   <depend>unav2_msgs</depend>
+  <depend>controller_manager</depend>
+  <depend>hardware_interface</depend>
+  <depend>realtime_tools</depend>
+  <depend>roscpp</depend>
+  <depend>roslaunch</depend>
+  <depend>roslint</depend>
+  <depend>sensor_msgs</depend>
   <!--   Note that this is equivalent to the following: -->
   <!--   <build_depend>roscpp</build_depend> -->
   <!--   <exec_depend>roscpp</exec_depend> -->
@@ -36,13 +43,10 @@
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>dynamic_reconfigure</build_depend>
-  <build_depend>roscpp</build_depend>
   <build_depend>rospy</build_depend>
   <build_export_depend>dynamic_reconfigure</build_export_depend>
-  <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>rospy</build_export_depend>
   <exec_depend>dynamic_reconfigure</exec_depend>
-  <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
 
 
