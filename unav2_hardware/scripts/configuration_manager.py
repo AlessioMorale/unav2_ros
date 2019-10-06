@@ -45,7 +45,7 @@ configurationSets = [
         "propertynames": ["temp_warning", "temp_critical", "temp_timeout", "temp_autorestore", "cur_warning", "cur_critical", "cur_timeout", "cur_autorestore", "slope_time", "bridge_off", "timeout"]},
 ]
 
-MsgTTL = 30  # max retries for a message
+MsgTTL = -1  # max retries for a message
 rootNamespace = "unav2"
 PublishersNamespace = rootNamespace + "/config"
 ackNamespace = rootNamespace + "/status/ack"
@@ -126,11 +126,12 @@ def run_node():
                 rospy.logdebug("Sending message " +
                                str(msg["msg"]) + ", ttl:" + str(msg["ttl"]))
                 publishers[cfg["config"].__name__].publish(msg["msg"])
-            msg["ttl"] = msg["ttl"] - 1
-            if msg["ttl"] <= 0:
-                rospy.logerr("No acknowledge received for transaction " +
-                             str(msg["msg"].transactionId) + ", message discarded")
-                messageQueue.remove(msg)
+            if MsgTTL > 0:
+                msg["ttl"] = msg["ttl"] - 1
+                if msg["ttl"] <= 0:
+                    rospy.logerr("No acknowledge received for transaction " +
+                                str(msg["msg"].transactionId) + ", message discarded")
+                    messageQueue.remove(msg)
         messageQueueLock.release()
 
         rate.sleep()
