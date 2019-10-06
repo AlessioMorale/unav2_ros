@@ -1,0 +1,5 @@
+<launch>
+    <include file="$(find unav2_hardware)/launch/description.launch" />
+    <include file="$(find unav2_hardware)/launch/unav2_interface.launch" />
+    <include file="$(find unav2_hardware)/launch/control.launch" />
+</launch>
