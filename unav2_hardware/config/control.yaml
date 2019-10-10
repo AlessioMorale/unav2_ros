@@ -30,13 +30,36 @@ velocity_controller:
     x:
       has_velocity_limits    : true
       max_velocity           : 2.0   # m/s
+      has_velocity_limits: true
+      max_velocity: 2.0
       has_acceleration_limits: true
-      max_acceleration       : 20.0   # m/s^2
+      max_acceleration: 5.0
+      has_jerk_limits: true
+      max_jerk: 100.0
   angular:
     z:
       has_velocity_limits    : true
       max_velocity           : 4.0   # rad/s
       has_acceleration_limits: true
-      max_acceleration       : 25.0   # rad/s^2
+      max_acceleration       : 20.0   # rad/s^2
 
 
+joint_limits:
+  joint1: 
+    has_velocity_limits    : true
+    max_velocity           : 2.0   # m/s
+    has_velocity_limits: true
+    max_velocity: 2.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    has_jerk_limits: true
+    max_jerk: 100.0
+  joint2:
+    has_velocity_limits    : true
+    max_velocity           : 2.0   # m/s
+    has_velocity_limits: true
+    max_velocity: 2.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    has_jerk_limits: true
+    max_jerk: 100.0
