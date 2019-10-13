@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="port" default="/dev/ttyACM0" />
-    <arg name="msgttl" default="30" />
+    <arg name="msgttl" default="-1" />
     <arg name="JointNames" default="joint1,joint2"/>
     <node pkg="rosserial_python" type="message_info_service.py" name="message_info_service" output="log" respawn="true" respawn_delay="0.5"/>
     <node pkg="rosserial_server" type="serial_node" name="rosserial_unav" output="log" respawn="true" respawn_delay="0.5">
