@@ -81,8 +81,8 @@
   </joint>
   
   <xacro:link_wheel name="link_right_wheel" />
-  <xacro:joint_wheel name="joint1" child="link_right_wheel" origin_xyz="-0.05 0.20 0" />
+  <xacro:joint_wheel name="joint2" child="link_right_wheel" origin_xyz="-0.05 0.20 0" />
   
   <xacro:link_wheel name="link_left_wheel" />
-  <xacro:joint_wheel name="joint2" child="link_left_wheel" origin_xyz="-0.05 -0.20 0" />
+  <xacro:joint_wheel name="joint1" child="link_left_wheel" origin_xyz="-0.05 -0.20 0" />
 </robot>

@@ -29,20 +29,20 @@ from unav2_msgs.msg import SafetyConfig
 # msg: message instance
 # propertynames: list of property to copy from config to message or tuples when source/dest name differs
 configurationSets = [
-    {"namespace": "bridge", "config": UnavBridgeConfig, "msg": BridgeConfig(),
-        "propertynames": ["pwm_dead_time", "pwm_frequency", "bridge_enable_polarity", "bridge_disable_mode_outa", "bridge_disable_mode_outb", "current_offset", "current_gain", "volt_gain", "volt_offset"]},
+#    {"namespace": "bridge", "config": UnavBridgeConfig, "msg": BridgeConfig(),
+#        "propertynames": ["pwm_dead_time", "pwm_frequency", "bridge_enable_polarity", "bridge_disable_mode_outa", "bridge_disable_mode_outb", "current_offset", "current_gain", "volt_gain", "volt_offset"]},
     {"namespace": "encoder", "config": UnavEncoderConfig, "msg": EncoderConfig(),
         "propertynames": ["cpr", "position", "has_z_index", "channels", "invert0", "invert1"]},
-    {"namespace": "limits", "config": UnavLimitsConfig, "msg": LimitsConfig(),
-        "propertynames": ['position', 'velocity', 'current', 'effort', 'pwm']},
+#    {"namespace": "limits", "config": UnavLimitsConfig, "msg": LimitsConfig(),
+#        "propertynames": ['position', 'velocity', 'current', 'effort', 'pwm']},
     {"namespace": "mechanical", "config": UnavMechanicalConfig, "msg": MechanicalConfig(),
         "propertynames": ['ratio', 'rotation0', 'rotation1']},
     {"namespace": "operation", "config": UnavOperationConfig, "msg": OperationConfig(),
         "propertynames": ['settings_command', 'operation_mode', 'pid_debug']},
     {"namespace": "pid", "config": UnavPIDConfig, "msg": PIDConfig(),
-        "propertynames": ["vel_kp", "vel_ki", "vel_kd", "vel_kaw", "cur_kp", "cur_ki", "cur_kd", "cur_kaw", "vel_frequency", "cur_frequency", "cur_enable"]},
-    {"namespace": "safety", "config": UnavSafetyConfig, "msg": SafetyConfig(),
-        "propertynames": ["temp_warning", "temp_critical", "temp_timeout", "temp_autorestore", "cur_warning", "cur_critical", "cur_timeout", "cur_autorestore", "slope_time", "bridge_off", "timeout"]},
+        "propertynames": ["vel_kp", "vel_ki", "vel_kd", "vel_kaw", "cur_kp", "cur_ki", "cur_kd", "cur_kaw", "vel_frequency", "cur_frequency", "cur_enable"]}
+#    {"namespace": "safety", "config": UnavSafetyConfig, "msg": SafetyConfig(),
+#        "propertynames": ["temp_warning", "temp_critical", "temp_timeout", "temp_autorestore", "cur_warning", "cur_critical", "cur_timeout", "cur_autorestore", "slope_time", "bridge_off", "timeout"]},
 ]
 
 MsgTTL = -1  # max retries for a message
