@@ -44,7 +44,6 @@ find_package(Boost REQUIRED COMPONENTS thread chrono)
 generate_dynamic_reconfigure_options(
    cfg/UnavBridge.cfg
    cfg/UnavEncoder.cfg
-   cfg/UnavLimits.cfg
    cfg/UnavMechanical.cfg
    cfg/UnavOperation.cfg
    cfg/UnavPID.cfg

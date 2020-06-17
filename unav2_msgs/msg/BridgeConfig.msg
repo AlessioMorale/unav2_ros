@@ -1,10 +1,3 @@
-bool bridge_enable_polarity
-bool bridge_disable_mode_outa
-bool bridge_disable_mode_outb
 uint16 pwm_dead_time
 uint16 pwm_frequency
-float32 volt_gain
-float32 volt_offset
-float32 current_offset
-float32 current_gain
 uint32  transactionId

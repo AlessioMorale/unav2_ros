@@ -1,11 +1,7 @@
-uint16 settings_command
-uint16 SETTINGS_COMMAND_NONE=0
-uint16 SETTINGS_COMMAND_STORE=1
-uint16 SETTINGS_COMMAND_RELOAD=2
 
 uint16 operation_mode
 uint16 OPERATION_MODE_MOTORS_DISABLED=0
 uint16 OPERATION_MODE_MOTORS_NORMAL=1
 uint16 OPERATION_MODE_MOTORS_EMERGENCY_STOP=2
-bool pid_debug
+bool reset_to_dfu
 uint32 transactionId

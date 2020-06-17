@@ -52,7 +52,6 @@ add_message_files(
     BridgeConfig.msg
     Diagnostic.msg
     EncoderConfig.msg
-    LimitsConfig.msg
     MechanicalConfig.msg
     OperationConfig.msg
     PerfCounter.msg
@@ -61,6 +60,7 @@ add_message_files(
     PIDState.msg
     JointState.msg
     JointCommand.msg
+    SystemStatus.msg
 )
 ## Generate services in the 'srv' folder
 # add_service_files(

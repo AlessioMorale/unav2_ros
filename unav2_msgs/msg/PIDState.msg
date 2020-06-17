@@ -1,4 +1,4 @@
-Header header
+time stamp
 float32[] timestep
 float32[] error
 float32[] p_term
