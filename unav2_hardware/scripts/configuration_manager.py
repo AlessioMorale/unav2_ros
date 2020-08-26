@@ -43,6 +43,7 @@ configurationSets = [
         "propertynames": ["temp_warning", "temp_limit", "temp_timeout", "temp_autorestore", "current_warning", "current_limit", "current_timeout", "current_autorestore", "slope_time", "bridge_off", "timeout"]},
 ]
 
+ACK_CODE_RESENDALL = 0xFFFFFFFF
 MsgTTL = -1  # max retries for a message
 rootNamespace = "unav2"
 PublishersNamespace = rootNamespace + "/config"
@@ -52,7 +53,7 @@ ackQueue = Queue(maxsize=40)
 srv = []
 messageQueueLock = Lock()
 publishers = {}
-
+configurations = {}
 
 def copyProperties(source, dest, propertynames):
     for p in propertynames:
@@ -67,6 +68,7 @@ def copyProperties(source, dest, propertynames):
 
 
 def publishConfig(cfgtype, config):
+    configurations[cfgtype.__name__] = config
     for msgcfg in [msg for msg in configurationSets if msg["config"] is cfgtype]:
         msg = {"msg": msgcfg["msg"], "ttl": MsgTTL}
         copyProperties(config, msg["msg"], msgcfg["propertynames"])
@@ -97,11 +99,20 @@ def bindCallback(msgtype):
 
 def configAckCallback(data):
     rospy.logdebug("Received ack" + str(data))
-    ackQueue.put(data.data)
+    if data.data == ACK_CODE_RESENDALL:
+        rospy.loginfo("Received request to resend all configurations")
+        for key in configurations.keys():
+            rospy.logdebug("Resending ", key)
+            m = [msg for msg in configurationSets if msg["config"].__name__ == key]
+            conf_type = m[0]["config"]
+            conf = configurations[key]
+            publishConfig(conf_type, conf)
+    else:
+        ackQueue.put(data.data)
 
 
 def run_node():
-    rate = rospy.Rate(10)  # 10hz
+    rate = rospy.Rate(5)  # 5Hz
     while not rospy.is_shutdown():
         try:
             while True:
