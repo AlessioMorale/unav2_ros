@@ -40,7 +40,11 @@ configurationSets = [
     {"namespace": "pid", "config": UnavPIDConfig, "msg": PIDConfig(),
         "propertynames": ["velocity_kp", "velocity_ki", "velocity_kd", "velocity_kaw", "velocity_frequency", "current_kp", "current_ki", "current_kd", "current_kaw", "current_frequency", "current_enable", 'pid_debug', ]},
     {"namespace": "safety", "config": UnavSafetyConfig, "msg": SafetyConfig(),
-        "propertynames": ["temp_warning", "temp_limit", "temp_timeout", "temp_autorestore", "current_warning", "current_limit", "current_timeout", "current_autorestore", "slope_time", "bridge_off", "timeout"]},
+        "propertynames": ["temp_warning", "temp_limit", "temp_timeout", "temp_autorestore", 
+        "current_warning", "current_limit", "current_timeout", "current_autorestore", 
+        "position_limit", "velocity_limit", "max_acceleration", "max_deceleration",
+        "pwm_limit", "error_limit",
+        "slope_time", "bridge_off", "timeout"]},
 ]
 
 ACK_CODE_RESENDALL = 0xFFFFFFFF
