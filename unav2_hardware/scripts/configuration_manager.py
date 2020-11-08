@@ -8,7 +8,6 @@ from dynamic_reconfigure.server import Server
 from std_msgs.msg import UInt32
 from unav2_hardware.cfg import UnavBridgeConfig
 from unav2_hardware.cfg import UnavEncoderConfig
-from unav2_hardware.cfg import UnavLimitsConfig
 from unav2_hardware.cfg import UnavMechanicalConfig
 from unav2_hardware.cfg import UnavOperationConfig
 from unav2_hardware.cfg import UnavPIDConfig
@@ -17,7 +16,6 @@ from unav2_hardware.cfg import UnavSafetyConfig
 
 from unav2_msgs.msg import BridgeConfig
 from unav2_msgs.msg import EncoderConfig
-from unav2_msgs.msg import LimitsConfig
 from unav2_msgs.msg import MechanicalConfig
 from unav2_msgs.msg import OperationConfig
 from unav2_msgs.msg import PIDConfig
