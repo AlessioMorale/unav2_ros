@@ -9,11 +9,9 @@
 #include "unav2_hardware/unav2_hardware.h"
 
 typedef boost::chrono::steady_clock time_source;
-void controlThread(ros::Rate rate, unav2_hardware::Unav2Hardware *unav2,
-                   controller_manager::ControllerManager *cm);
+void controlThread(ros::Rate rate, unav2_hardware::Unav2Hardware *unav2, controller_manager::ControllerManager *cm);
 
-void controlThread(ros::Rate rate, unav2_hardware::Unav2Hardware *unav2,
-                   controller_manager::ControllerManager *cm) {
+void controlThread(ros::Rate rate, unav2_hardware::Unav2Hardware *unav2, controller_manager::ControllerManager *cm) {
   time_source::time_point last_time = time_source::now();
 
   while (1) {
