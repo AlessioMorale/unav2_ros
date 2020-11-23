@@ -3,6 +3,9 @@
 #include <boost/algorithm/string/erase.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/assign.hpp>
+#define _USE_MATH_DEFINES
+#include <cmath>
+
 namespace unav2_hardware {
 
 Unav2Hardware::Unav2Hardware() {
@@ -52,8 +55,8 @@ void Unav2Hardware::copyJointsState() {
     for (int i = 0; (i < joints.size()) && (i < statussize); i++) {
       ROS_DEBUG("joint(%i)-p %f, v %f, e %f", i, jointstate_msg->position[i],
                jointstate_msg->velocity[i], jointstate_msg->effort[i]);
-      joints[i].position = static_cast<double>(jointstate_msg->position[i]);
-      joints[i].velocity = static_cast<double>(jointstate_msg->velocity[i]);
+      joints[i].position = static_cast<double>(jointstate_msg->position[i] * (2 * M_PI));
+      joints[i].velocity = static_cast<double>(jointstate_msg->velocity[i] * (2 * M_PI));
       joints[i].effort = static_cast<double>(jointstate_msg->effort[i]);
     }
   }
@@ -63,7 +66,7 @@ void Unav2Hardware::publish() {
   if (jointcommand_pub.trylock()) {
     jointcommand_pub.msg_.mode = unav2_msgs::JointCommand::VELOCITY;
     for (int i = 0; i < joints.size(); i++) {
-      jointcommand_pub.msg_.command[i] = (float)joints[i].command;
+      jointcommand_pub.msg_.command[i] = (float)joints[i].command / (2 * M_PI);
     }
     jointcommand_pub.unlockAndPublish();
   } else{
