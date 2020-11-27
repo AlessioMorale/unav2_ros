@@ -11,7 +11,7 @@ namespace unav2_hardware {
 Unav2Hardware::Unav2Hardware() {
   std::string tmp;
   ros::V_string joint_names;
-  nh_.getParam("JointNames", tmp);
+  nh_.getParam("joint_names", tmp);
   ROS_INFO(tmp.c_str());
 
   if (tmp.empty()) {
@@ -44,11 +44,10 @@ void Unav2Hardware::copyJointsState() {
   boost::mutex::scoped_lock jointstate_msg_lock(jointstate_msg_mutex, boost::try_to_lock);
   if (jointstate_msg && jointstate_msg_lock && jointstate_msg->position.size() > 0) {
     int statussize = jointstate_msg->position.size();
-    for (int i = 0; (i < joints.size()) && (i < statussize); i++) {
-      ROS_DEBUG("joint(%i)-p %f, v %f, e %f", i, jointstate_msg->position[i], jointstate_msg->velocity[i], jointstate_msg->effort[i]);
-      joints[i].position = static_cast<double>(jointstate_msg->position[i] * (2 * M_PI));
-      joints[i].velocity = static_cast<double>(jointstate_msg->velocity[i] * (2 * M_PI));
-      joints[i].effort = static_cast<double>(jointstate_msg->effort[i]);
+    for (int i = 0; i < joints.size(); i++) {
+      joints[i].position = static_cast<double>(jointstate_msg->position[i % statussize] * (2 * M_PI));
+      joints[i].velocity = static_cast<double>(jointstate_msg->velocity[i % statussize] * (2 * M_PI));
+      joints[i].effort = static_cast<double>(jointstate_msg->effort[i % statussize]);
     }
   }
 }
