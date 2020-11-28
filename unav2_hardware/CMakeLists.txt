@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   realtime_tools
   roslaunch
   roslint
+  rosserial_server
   sensor_msgs
   std_msgs
   topic_tools
@@ -64,6 +65,8 @@ catkin_package(
 #  LIBRARIES unav2_hardware
   CATKIN_DEPENDS dynamic_reconfigure roscpp rospy
   unav2_msgs
+  sensor_msgs
+  std_msgs
   #  DEPENDS system_lib
 )
 

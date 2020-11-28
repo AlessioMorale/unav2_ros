@@ -8,8 +8,9 @@ project(unav2_msgs)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  std_msgs
+  diagnostic_msgs
   message_generation
+  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -52,14 +53,14 @@ add_message_files(
     BridgeConfig.msg
     Diagnostic.msg
     EncoderConfig.msg
+    JointCommand.msg
+    JointState.msg
     MechanicalConfig.msg
     OperationConfig.msg
     PerfCounter.msg
     PIDConfig.msg
-    SafetyConfig.msg
     PIDState.msg
-    JointState.msg
-    JointCommand.msg
+    SafetyConfig.msg
     SystemStatus.msg
 )
 ## Generate services in the 'srv' folder
@@ -79,6 +80,7 @@ add_message_files(
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
+  diagnostic_msgs
   std_msgs
 )
 
@@ -112,10 +114,10 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-# LIBRARIES unav2_msgs
-CATKIN_DEPENDS std_msgs message_runtime
-#  DEPENDS system_lib
+  CATKIN_DEPENDS 
+  diagnostic_msgs
+  message_runtime
+  std_msgs
 )
 
 ###########
