@@ -1,13 +1,17 @@
 rosserial_unav:
   port: "/dev/ttyACM0"
 
+unav2_hardware:
+  joint_names: "joint1,joint2,joint3,joint4"
+  port: "/dev/ttyACM0"
+
 unav2_configuration_manager:
   bridge:
     pwm_dead_time: 0
     pwm_frequency: 1
   encoder:
     channels: 2
-    cpr: 11
+    cpr: 4096
     has_z_index: false
     invert0: true
     invert1: true
@@ -29,10 +33,10 @@ unav2_configuration_manager:
     current_kp: 0.0
     pid_debug: true
     velocity_frequency: 250
-    velocity_kaw: 0.2
+    velocity_kaw: 0.5
     velocity_kd: 0.0
-    velocity_ki: 0.2
-    velocity_kp: 0.5
+    velocity_ki: 5.0
+    velocity_kp: 3.0
   safety:
     bridge_off: 1000
     current_autorestore: 500

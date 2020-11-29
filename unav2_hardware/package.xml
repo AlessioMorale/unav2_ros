@@ -34,9 +34,6 @@
   <build_export_depend>dynamic_reconfigure</build_export_depend>
   <build_export_depend>rospy</build_export_depend>
   <exec_depend>dynamic_reconfigure</exec_depend>
-  <exec_depend>rospy</exec_depend>
-  <exec_depend>xacro</exec_depend>
-  <exec_depend>robot_state_publisher</exec_depend>
   <exec_depend>rosserial_python</exec_depend>
 
   <export>
