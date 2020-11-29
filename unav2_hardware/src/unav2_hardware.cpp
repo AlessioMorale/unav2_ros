@@ -1,4 +1,5 @@
 #include "unav2_hardware/unav2_hardware.h"
+#include "unav2_hardware/unav2_topics.h"
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/erase.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -9,19 +10,16 @@
 namespace unav2_hardware {
 
 Unav2Hardware::Unav2Hardware() {
-  std::string tmp;
-  ros::V_string joint_names;
-  nh_.getParam("joint_names", tmp);
-  ROS_INFO(tmp.c_str());
+  std::string tmp{"joint1,joint2"};
+  std::vector<std::string> joint_names;
+  nh.getParam("joint_names", tmp);
 
-  if (tmp.empty()) {
-    tmp = "joint1,joint2";
-  }
   boost::erase_all(tmp, " ");
   boost::split(joint_names, tmp, boost::is_any_of(","));
 
   joints.resize(joint_names.size());
-  jointcommand_pub.init(nh_, "unav2/control/joint_cmd", 1);
+  jointcommand_pub.init(nh, topics::joint_command, 1);
+  jointcommand_pub.msg_.command.resize(joint_names.size());
 
   for (unsigned int i = 0; i < joint_names.size(); i++) {
     hardware_interface::JointStateHandle joint_state_handle(joint_names[i], &joints[i].position, &joints[i].velocity, &joints[i].effort);
@@ -29,43 +27,39 @@ Unav2Hardware::Unav2Hardware() {
 
     hardware_interface::JointHandle joint_handle(joint_state_handle, &joints[i].command);
     velocity_joint_interface.registerHandle(joint_handle);
-
-    // add an entry for this joint
-    jointcommand_pub.msg_.command.push_back(0);
   }
 
   registerInterface(&joint_state_interface);
   registerInterface(&velocity_joint_interface);
 
-  jointstate_sub = nh_.subscribe("/unav2/status/joint", 1, &Unav2Hardware::jointStateCallback, this);
+  jointstate_sub = nh.subscribe(topics::joint_status, 1, &Unav2Hardware::joint_state_callback, this);
 }
 
-void Unav2Hardware::copyJointsState() {
-  boost::mutex::scoped_lock jointstate_msg_lock(jointstate_msg_mutex, boost::try_to_lock);
-  if (jointstate_msg && jointstate_msg_lock && jointstate_msg->position.size() > 0) {
-    int statussize = jointstate_msg->position.size();
-    for (int i = 0; i < joints.size(); i++) {
-      joints[i].position = static_cast<double>(jointstate_msg->position[i % statussize] * (2 * M_PI));
-      joints[i].velocity = static_cast<double>(jointstate_msg->velocity[i % statussize] * (2 * M_PI));
-      joints[i].effort = static_cast<double>(jointstate_msg->effort[i % statussize]);
+void Unav2Hardware::read() {
+  if (const auto lock = std::unique_lock{jointstate_msg_mutex, std::try_to_lock}) {
+    if (jointstate_msg && lock.owns_lock() && jointstate_msg->position.size() > 0) {
+      int statussize = jointstate_msg->position.size();
+      for (int i = 0; i < joints.size(); i++) {
+        joints[i].position = static_cast<double>(jointstate_msg->position[i % statussize] * (2 * M_PI));
+        joints[i].velocity = static_cast<double>(jointstate_msg->velocity[i % statussize] * (2 * M_PI));
+        joints[i].effort = static_cast<double>(jointstate_msg->effort[i % statussize]);
+      }
     }
   }
 }
 
-void Unav2Hardware::publish() {
+void Unav2Hardware::write() {
   if (jointcommand_pub.trylock()) {
     jointcommand_pub.msg_.mode = unav2_msgs::JointCommand::VELOCITY;
     for (int i = 0; i < joints.size(); i++) {
       jointcommand_pub.msg_.command[i] = (float)joints[i].command / (2 * M_PI);
     }
     jointcommand_pub.unlockAndPublish();
-  } else {
-    ROS_WARN("Couldn't lock the joints publisher");
   }
 }
 
-void Unav2Hardware::jointStateCallback(const unav2_msgs::JointStateConstPtr &msg) {
-  boost::mutex::scoped_lock lock(jointstate_msg_mutex);
+void Unav2Hardware::joint_state_callback(const unav2_msgs::JointStateConstPtr &msg) {
+  const std::lock_guard<std::mutex> lock(jointstate_msg_mutex);
   jointstate_msg = msg;
 }
 

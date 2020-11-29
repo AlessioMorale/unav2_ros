@@ -47,9 +47,9 @@ configurationSets = [
 
 ACK_CODE_RESENDALL = 0xFFFFFFFF
 MsgTTL = -1  # max retries for a message
-rootNamespace = "unav2"
-PublishersNamespace = rootNamespace + "/config"
-ackNamespace = rootNamespace + "/status/ack"
+
+PublishersNamespace = "config"
+ackNamespace = "status/ack"
 messageQueue = []
 ackQueue = Queue(maxsize=40)
 srv = []

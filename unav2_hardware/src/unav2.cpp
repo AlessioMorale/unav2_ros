@@ -4,16 +4,13 @@
 #include <memory>
 #include <string>
 
-#include "controller_manager/controller_manager.h"
-#include "ros/ros.h"
-#include "rosserial_server/serial_session.h"
-#include "unav2_hardware/unav2_hardware.h"
-#include <unav2_msgs/SystemStatus.h>
+#include <controller_manager/controller_manager.h>
+#include <ros/ros.h>
+#include <rosserial_server/serial_session.h>
 #include <sensor_msgs/BatteryState.h>
-
-
-const std::string SYSTEM_TOPIC = "/unav2/status/system";
-const std::string BATTERY_STATE_TOPIC = "/status/battery";
+#include <unav2_msgs/SystemStatus.h>
+#include "unav2_hardware/unav2_hardware.h"
+#include "unav2_hardware/unav2_topics.h"
 
 int param_battery_technology;
 double param_capacity;
@@ -32,9 +29,9 @@ void controlThread(ros::Rate rate, unav2_hardware::Unav2Hardware *unav2, control
     ros::Duration elapsed(elapsed_duration.count());
     last_time = this_time;
 
-    unav2->copyJointsState();
+    unav2->read();
     cm->update(ros::Time::now(), elapsed);
-    unav2->publish();
+    unav2->write();
     rate.sleep();
   }
 }
@@ -66,18 +63,32 @@ void systemStateCallback(const unav2_msgs::SystemStatus &msg) {
 
 int main(int argc, char *argv[]) {
   // Initialize ROS node.
-  ros::init(argc, argv, "unav2hardware_node");
+  ros::init(argc, argv, "unav2_hardware_node");
+  
   unav2_hardware::Unav2Hardware unav2;
   ros::NodeHandle controller_nh("");
 
-  controller_nh.param("battery_technology", param_battery_technology, (int)sensor_msgs::BatteryState::POWER_SUPPLY_TECHNOLOGY_UNKNOWN);
-  controller_nh.param("battery_cells", param_cells, (int)0);
-  controller_nh.param("battery_capacity", param_capacity, (double)nan(""));
+  int rate;
+
+  controller_nh.param("controller_rate", rate, (int)50);
 
   controller_manager::ControllerManager cm(&unav2, controller_nh);
   boost::thread(boost::bind(controlThread, ros::Rate(50), &unav2, &cm));
-  auto system_subscriber = controller_nh.subscribe(SYSTEM_TOPIC, 1, systemStateCallback);
-  battery_state_pub = std::make_unique<ros::Publisher>(controller_nh.advertise<sensor_msgs::BatteryState>(BATTERY_STATE_TOPIC, 1, true));
+
+  std::string port;
+  ros::param::param<std::string>("port", port, "/dev/ttyACM0");
+  boost::asio::io_service io_service;
+  new rosserial_server::SerialSession(io_service, port, 115200);
+  boost::thread(boost::bind(&boost::asio::io_service::run, &io_service));
+
+  ros::NodeHandle adapter_nh("");
+  adapter_nh.param("battery_technology", param_battery_technology, (int)sensor_msgs::BatteryState::POWER_SUPPLY_TECHNOLOGY_UNKNOWN);
+  adapter_nh.param("battery_cells", param_cells, (int)0);
+  adapter_nh.param("battery_capacity", param_capacity, (double)nan(""));
+
+  auto system_subscriber = adapter_nh.subscribe(unav2_hardware::topics::system_topic, 1, systemStateCallback);
+  battery_state_pub = std::make_unique<ros::Publisher>(adapter_nh.advertise<sensor_msgs::BatteryState>(unav2_hardware::topics::battery_state_topic, 1, true));
+
   ros::spin();
   return 0;
 }
