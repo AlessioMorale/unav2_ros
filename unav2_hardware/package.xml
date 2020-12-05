@@ -16,6 +16,7 @@
   <depend>roslaunch</depend>
   <depend>roslint</depend>
   <depend>sensor_msgs</depend>
+  <depend>joint_limits_interface</depend>
 
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>joint_state_controller</exec_depend>
