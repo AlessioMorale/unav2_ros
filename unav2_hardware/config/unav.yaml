@@ -1,13 +1,12 @@
 rosserial_unav:
   port: "/dev/ttyACM0"
 
-unav2_hardware:
-  joints:
-    - joint1
-    - joint2
-    - joint3
-    - joint4"
-  loop_rate: 50
+joints:
+  - joint1
+  - joint2
+  - joint3
+  - joint4"
+loop_rate: 50
 
 unav2_configuration_manager:
   bridge:

@@ -38,16 +38,17 @@ void systemStateCallback(const unav2_msgs::SystemStatus &msg) {
 }
 
 int main(int argc, char *argv[]) {
+  const std::string name = "unav2_hardware";
   // Initialize ROS node.
-  ros::init(argc, argv, "unav2_hardware_node");
+  ros::init(argc, argv, name);
+  ROS_WARN_NAMED(name, "Starting");
 
   ros::NodeHandle nh("");
-  ros::NodeHandle controller_nh("");
 
-  ros::AsyncSpinner spinner(1);
+  ros::AsyncSpinner spinner(3);
   spinner.start();
-
-  unav2_hardware::Unav2Hardware unav2(controller_nh);
+  ROS_INFO_NAMED(name, "Starting hardware interface");
+  std::shared_ptr<unav2_hardware::Unav2Hardware> unav2(new unav2_hardware::Unav2Hardware(nh));
 
   nh.param("battery_technology", param_battery_technology, (int)sensor_msgs::BatteryState::POWER_SUPPLY_TECHNOLOGY_UNKNOWN);
   nh.param("battery_cells", param_cells, (int)0);

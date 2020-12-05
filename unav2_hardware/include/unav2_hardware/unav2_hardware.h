@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include <vector>
 #include <mutex>
+#include <vector>
 
 #include <controller_manager/controller_manager.h>
 #include <hardware_interface/joint_command_interface.h>
@@ -19,12 +19,13 @@ namespace unav2_hardware {
 
 class Unav2Hardware : public hardware_interface::RobotHW {
 public:
-  Unav2Hardware(ros::NodeHandle &nh);
+  Unav2Hardware(const ros::NodeHandle &nh);
   void update(const ros::TimerEvent &e);
+  const std::string name = "Unav2Hardware";
 
 private:
-  void read();
-  void write();
+  void read(const ros::Time &, const ros::Duration &) override;
+  void write(const ros::Time &, const ros::Duration &) override;
 
   void joint_state_callback(const unav2_msgs::JointStateConstPtr &msg);
 
@@ -43,18 +44,18 @@ private:
     double velocity;
     double effort;
     double velocity_command;
-    } joint_t;
+  } joint_t;
 
-    std::vector<joint_t> joints_;
+  std::vector<joint_t> joints_;
 
-    unav2_msgs::JointStateConstPtr jointstate_msg_;
-    std::mutex jointstate_msg_mutex_;
+  unav2_msgs::JointStateConstPtr jointstate_msg_;
+  std::mutex jointstate_msg_mutex_;
 
-    ros::Timer non_realtime_loop_;
-    ros::Duration control_period_;
-    ros::Duration elapsed_time_;
-    double rate_;
-    double v_error_;
+  ros::Timer non_realtime_loop_;
+  ros::Duration control_period_;
+  ros::Duration elapsed_time_;
+  double rate_;
+  double v_error_;
 };
 
 } // namespace unav2_hardware
