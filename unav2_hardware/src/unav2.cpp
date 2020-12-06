@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 
   nh.param("battery_technology", param_battery_technology, (int)sensor_msgs::BatteryState::POWER_SUPPLY_TECHNOLOGY_UNKNOWN);
   nh.param("battery_cells", param_cells, (int)0);
-  nh.param("battery_capacity", param_capacity, (double)nan(""));
+  nh.param("battery_capacity", param_capacity, (double)0.0);
 
   auto system_subscriber = nh.subscribe(unav2_hardware::topics::system_topic, 1, systemStateCallback);
   battery_state_pub = std::make_unique<ros::Publisher>(nh.advertise<sensor_msgs::BatteryState>(unav2_hardware::topics::battery_state_topic, 1, true));
