@@ -28,6 +28,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(Boost REQUIRED COMPONENTS thread chrono)
 
+find_package(Protobuf REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -76,13 +77,23 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
+  ${PROTOBUF_INCLUDE_DIR}
 )
 
+protobuf_generate_cpp(PROTO_SRC PROTO_HEADER
+  proto/messages.proto
+  proto/configuration.proto
+)
+
+set_source_files_properties(${PROTO_HEADER} ${PROTO_SRC}
+    PROPERTIES GENERATED TRUE)
 
 ## Declare a C++ executable
 add_executable(${PROJECT_NAME}_node 
 src/unav2_hardware.cpp
 src/unav2.cpp
+${PROTO_SRC}
+${PROTO_HEADER}
 )
 
 ## Rename C++ executable without prefix
@@ -94,6 +105,7 @@ add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catk
 target_link_libraries(${PROJECT_NAME}_node
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
+  ${Protobuf_LIBRARIES}
 )
 
 #############
