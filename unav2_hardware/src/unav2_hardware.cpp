@@ -23,7 +23,7 @@ Unav2Hardware::Unav2Hardware(const ros::NodeHandle &nh) : nh_{nh} {
   if (rate_ == 0) {
     ROS_ERROR_NAMED(name, "controller_rate configuration invalid");
   }
-  for (unsigned int i = 0; i < joint_names.size(); i++) {
+  for (size_t i = 0; i < joint_names.size(); i++) {
     auto joint_name = joint_names[i];
     ROS_INFO_STREAM_NAMED(name, "setting up joint " << joint_name);
 
@@ -61,7 +61,7 @@ void Unav2Hardware::read(const ros::Time &, const ros::Duration &) {
   if (const auto lock = std::unique_lock{jointstate_msg_mutex_, std::try_to_lock}) {
     if (jointstate_msg_ && lock.owns_lock() && jointstate_msg_->position.size() > 0) {
       int statussize = jointstate_msg_->position.size();
-      for (int i = 0; i < joints_.size(); i++) {
+      for (size_t i = 0; i < joints_.size(); i++) {
         joints_[i].position = static_cast<double>(jointstate_msg_->position[i % statussize] * (2 * M_PI));
         joints_[i].velocity = static_cast<double>(jointstate_msg_->velocity[i % statussize] * (2 * M_PI));
         joints_[i].effort = static_cast<double>(jointstate_msg_->effort[i % statussize]);
@@ -81,7 +81,7 @@ void Unav2Hardware::update(const ros::TimerEvent &e) {
 void Unav2Hardware::write(const ros::Time &, const ros::Duration &) {
   if (jointcommand_pub_.trylock()) {
     jointcommand_pub_.msg_.mode = unav2_msgs::JointCommand::VELOCITY;
-    for (int i = 0; i < joints_.size(); i++) {
+    for (size_t i = 0; i < joints_.size(); i++) {
       jointcommand_pub_.msg_.command[i] = (float)joints_[i].velocity_command / (2 * M_PI);
     }
     jointcommand_pub_.unlockAndPublish();
