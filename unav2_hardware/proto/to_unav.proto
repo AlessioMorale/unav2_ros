@@ -1,9 +1,5 @@
 syntax = "proto2";
 
-message MsgTransactionAck {
-  required uint32 transactionId = 1;
-}
-
 message OperationConfig {
   enum OperationMode { Disabled = 0; Normal = 1; EmergencyStop = 2; }
   required OperationMode operation_mode = 1;
@@ -77,4 +73,17 @@ message MsgConfiguration {
   optional MechanicalConfig mechanical = 5;
   optional SafetyConfig safety = 6;
   required uint32 transactionId = 7;
+}
+
+message MsgJointCommand {
+  // interpretation of command field
+  enum JointCommandMode { disabled = 0; failsafe = -1; position = 1; velocity = 2; effort = 3; }
+  required uint32 seq = 1;
+  required JointCommandMode mode = 2;
+  repeated float command = 3;
+}
+
+message MsgToUnavUnion {
+  optional MsgJointCommand joint_command = 1;
+  optional MsgConfiguration configuration = 2;
 }

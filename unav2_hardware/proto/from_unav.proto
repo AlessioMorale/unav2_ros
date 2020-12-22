@@ -1,5 +1,10 @@
 syntax = "proto2";
 
+
+message MsgTransactionAck {
+  required uint32 transactionId = 1;
+}
+
 message JointState {
   required float position = 1;
   required float velocity = 2;
@@ -25,14 +30,6 @@ message PerfCounter {
   required uint32 lastUpdateTS = 5;
 }
 
-message MsgJointCommand {
-  // interpretation of command field
-  enum JointCommandMode { disabled = 0; failsafe = -1; position = 1; velocity = 2; effort = 3; }
-  required uint32 seq = 1;
-  required JointCommandMode mode = 2;
-  repeated float command = 3;
-}
-
 message MsgJointsState {
   repeated JointState joints = 1;
 }
@@ -46,7 +43,6 @@ message MsgEffortPIDState {
 }
 
 message MsgDiagnostic {
-  required int32 stamp = 1;
   repeated PerfCounter counters = 2;
 }
 
@@ -66,4 +62,14 @@ message MsgLogger {
   enum LogLevel { debug = 0; info = 1; warning = 2; error = 3; critical = 4; };
   required string message = 1;
   required LogLevel level = 2;
+}
+
+message MsgFromUnavUnion {
+  optional MsgJointsState joints_state = 1;
+  optional MsgSystemStatus system_status = 2;
+  optional MsgDiagnostic diagnostic = 3;
+  optional MsgEffortPIDState effort_pid_state = 4;
+  optional MsgVelocityPIDState velocity_pid_state = 5;
+  optional MsgTransactionAck ack = 6;
+  optional MsgLogger logger = 7;
 }

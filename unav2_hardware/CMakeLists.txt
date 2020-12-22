@@ -79,11 +79,12 @@ include_directories(
   ${Boost_INCLUDE_DIRS}
   ${PROTOBUF_INCLUDE_DIR}
   ${GTEST_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 protobuf_generate_cpp(PROTO_SRC PROTO_HEADER
-  proto/messages.proto
-  proto/configuration.proto
+  proto/from_unav.proto
+  proto/to_unav.proto
 )
 
 set_source_files_properties(${PROTO_HEADER} ${PROTO_SRC}
@@ -150,7 +151,9 @@ target_link_libraries(${PROJECT_NAME}_node
 
 catkin_add_gtest(gtest_test
 test/test_main.cpp
-test/test_robot_io_message_streaming.cpp
+test/robot_io/test_message_streaming.cpp
+test/robot_io/test_interface.cpp
+
 ${PROTO_SRC}
 ${PROTO_HEADER}
 )
